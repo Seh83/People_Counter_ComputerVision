@@ -33,7 +33,7 @@ def getIntersection(line1, line2):
 
 def testIntersectionIn(x, y):
     res = -750 * x + 700 * y + 157500
-    print(res)
+    #print(res)
     if (res >= -850) and (res < 850):
         print(str(res))
         return True
@@ -42,7 +42,7 @@ def testIntersectionIn(x, y):
 
 def testIntersectionOut(x, y):
     res = -750 * x + 700 * y + 180000
-    print(res)
+    #print(res)
     if (res >= -850) and (res <= 850):
         print(str(res))
         return True
