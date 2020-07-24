@@ -1,4 +1,7 @@
 import datetime
+import os
+import time
+
 import cv2
 import imutils
 
@@ -32,26 +35,34 @@ def getIntersection(line1, line2):
 
 
 def testIntersectionIn(x, y):
-    res = -750 * x + 700 * y + 157500
-    #print(res)
-    if (res >= -850) and (res < 850):
-        print(str(res))
+    res = -450 * x + 400 * y + 157500
+    print(res)
+    # if((x>340 and x<390) and (y<30) and (w<190 and w > 170)):
+    if (x > 340 and x < 370) and (y < 30):
+    #if (res >= -550) and (res <= 550):
+        # if (res >= -1700) and (res < 1700):
+        # print(str(res))
         return True
     return False
 
 
+# sol alt 0-300
+# kapı 300-40
+
 def testIntersectionOut(x, y):
-    res = -750 * x + 700 * y + 180000
-    #print(res)
-    if (res >= -850) and (res <= 850):
-        print(str(res))
+    res = -450 * x + 400 * y + 180000
+    print(res)
+    # if((x>270 and x<320) and (y<30) and (w<240 and w > 210)):
+    if ((x > 290 and x < 320) and (y < 30)):
+    #if (res >= -550) and (res <= 550):
+        # if (res >= -1700) and (res <= 1700):
+        # print(str(res))
         return True
 
     return False
 
 
 camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
-# camera = cv2.VideoCapture(0)
 
 firstFrame = None
 
@@ -91,16 +102,17 @@ while True:
 
     for c in cnts:
         # if the contour is too small, ignore it
-        if cv2.contourArea(c) < 11000:
+        if cv2.contourArea(c) < 12000:
             continue
+        # print(cv2.arcLength(c, True))
         # compute the bounding box for the contour, draw it on the frame,
         # and update the text
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-        cv2.line(frame, (width // 2, 0), (width, 750), (250, 0, 1), 2)  # blue line
-        cv2.line(frame, (width // 2 - 50, 0), (width - 50, 750), (0, 0, 255), 2)  # red line
-        #print(x, y, w, h)
+        print(w)
+        cv2.line(frame, (width // 2, 0), (width, 550), (250, 0, 1), 2)  # blue line
+        cv2.line(frame, (width // 2 - 50, 0), (width - 50, 550), (0, 0, 255), 2)  # red line
+        # print(x, y, w, h)
 
         # x: yatay y: yakınlık
 
@@ -111,13 +123,18 @@ while True:
                  shift=0)
 
         #
-        # if testIntersectionIn((x + x + w) // 2, (y + y + h) // 2):
-        if testIntersectionIn((x + x + w) // 2, (y + y + h) // 2):
-            textIn += 1
-
-        # if testIntersectionOut((x + x + w) // 2, (y + y + h) // 2):
-        if testIntersectionOut((x + x + w) // 2, (y + y + h) // 2):
+        #if testIntersectionIn((x + x + w) // 2, (y + y + h) // 2):
+        if testIntersectionIn(x, y):
             textOut += 1
+            camera.release()
+            camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
+
+         # print(x,y)
+        #if testIntersectionOut((x + x + w) // 2, (y + y + h) // 2):
+        if testIntersectionOut(x, y):
+            textIn += 1
+            camera.release()
+            camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
 
         # draw the text and timestamp on the frame
 
@@ -134,7 +151,7 @@ while True:
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
     cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
                 (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
-    cv2.imshow("Security Feed", frame)
+    cv2.imshow("Kişi Sayar", frame)
 
 # cleanup the camera and close any open windows
 camera.release()
