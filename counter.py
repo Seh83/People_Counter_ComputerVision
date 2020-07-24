@@ -184,6 +184,8 @@ while True:
             camera.release()
             camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
 
+#todo 270-330 a w çekilicek 270-290, 300-330 olarak w üzerinden ayırılıp y<10 a verilicek
+
         # draw the text and timestamp on the frame
 
         # show the frame and record if the user presses a key
