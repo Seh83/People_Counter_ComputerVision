@@ -34,29 +34,49 @@ def getIntersection(line1, line2):
 '''
 
 
+def line_intersection(line1, line2):
+    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+        raise Exception('lines do not intersect')
+
+    d = (det(*line1), det(*line2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+    return x, y
+
+
 def testIntersectionIn(x, y):
     res = -450 * x + 400 * y + 157500
-    print(res)
+    #print(res)
     # if((x>340 and x<390) and (y<30) and (w<190 and w > 170)):
-    if (x > 340 and x < 370) and (y < 30):
-    #if (res >= -550) and (res <= 550):
+    if (x > 340 and x < 370) and (y < 20):
+        # if (res >= -550) and (res <= 550):
         # if (res >= -1700) and (res < 1700):
-        # print(str(res))
+        print(str(res))
         return True
     return False
 
 
-# sol alt 0-300
-# kapı 300-40
+#         x -  y - w - h
+# sol alt 0 - 300-   -
+# kapı   300 - 40-   -
+# IN x > 290 and x < 320 OUT x > 340 and x < 370 WHILE Y < 30
+
 
 def testIntersectionOut(x, y):
     res = -450 * x + 400 * y + 180000
-    print(res)
+    #print(res)
     # if((x>270 and x<320) and (y<30) and (w<240 and w > 210)):
-    if ((x > 290 and x < 320) and (y < 30)):
-    #if (res >= -550) and (res <= 550):
+    if ((x > 290 and x < 320) and (y < 10)):
+        # if (res >= -550) and (res <= 550):
         # if (res >= -1700) and (res <= 1700):
-        # print(str(res))
+        print(str(res))
         return True
 
     return False
@@ -109,11 +129,16 @@ while True:
         # and update the text
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        print(w)
+        #print(w)
         cv2.line(frame, (width // 2, 0), (width, 550), (250, 0, 1), 2)  # blue line
         cv2.line(frame, (width // 2 - 50, 0), (width - 50, 550), (0, 0, 255), 2)  # red line
         # print(x, y, w, h)
+        ######################################
+        a = (width // 2, 0), (width, 550)
 
+        b = (width // 2 - 50, 0), (width - 50, 550)
+        print(line_intersection(a, b))
+        ######################################
         # x: yatay y: yakınlık
 
         rectangleCenterPoint = ((x + x + w) // 2, (y + y + h) // 2)
@@ -123,16 +148,26 @@ while True:
                  shift=0)
 
         #
-        #if testIntersectionIn((x + x + w) // 2, (y + y + h) // 2):
+        # if testIntersectionIn((x + x + w) // 2, (y + y + h) // 2):
+        # if testIntersectionIn(w,h):
+        # if rectangleCenterPoint ( x > 290 and x < 320  ):
+
+        # if (  ):
+        #
+        # if (((x + x + w) // 2) >= (width // 2 - 50, 0) and (x + x + w) // 2 <= (width // 2, 0)) and ((y + y + h) // 2 >= (width - 50, 550) and (y + y + h) // 2  <= (width, 550))
         if testIntersectionIn(x, y):
-            textOut += 1
+            textIn += 1
             camera.release()
             camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
 
-         # print(x,y)
-        #if testIntersectionOut((x + x + w) // 2, (y + y + h) // 2):
+        # print(x,y)
+        # if testIntersectionOut((x + x + w) // 2, (y + y + h) // 2):
+        # if testIntersectionOut(w,h):
+        # if rectangleCenterPoint in (x > 340 and x < 370):
+        # todo Correctly calculate the lines and place the intersections accordingly.
+        # if (((x + x + w) // 2) >= (width // 2 - 50, 0) and (x + x + w) // 2 <= (width // 2, 0)) and ((y + y + h) // 2 >= (width - 50, 550) and (y + y + h) // 2  <= (width, 550))
         if testIntersectionOut(x, y):
-            textIn += 1
+            textOut += 1
             camera.release()
             camera = cv2.VideoCapture('rtsp://admin:admin123@192.168.1.108:554/cam/realmonitor?channel=1&subtype=0')
 
@@ -142,16 +177,19 @@ while True:
         # cv2.imshow("Thresh", thresh)
         # cv2.imshow("Frame Delta", frameDelta)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #    break
 
     cv2.putText(frame, "In: {}".format(str(textIn)), (10, 50),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
     cv2.putText(frame, "Out: {}".format(str(textOut)), (10, 70),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
     cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
                 (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
-    cv2.imshow("Kişi Sayar", frame)
+
+    cv2.imshow("Kisi Sayar", frame)
 
 # cleanup the camera and close any open windows
 camera.release()
