@@ -51,11 +51,18 @@ def line_intersection(line1, line2):
     return x, y
 
 
+def rescale_frame(frame, percent):
+    width_new = int(frame.shape[1] * percent / 100)
+    height_new = int(frame.shape[0] * percent / 100)
+    dim = (width_new, height_new)
+    return cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)
+
+
 def testIntersectionIn(x, y):
     res = -450 * x + 400 * y + 157500
-    #print(res)
+    # print(res)
     # if((x>340 and x<390) and (y<30) and (w<190 and w > 170)):
-    if (x > 340 and x < 370) and (y < 20):
+    if (340 < x < 370) and (y < 20):
         # if (res >= -550) and (res <= 550):
         # if (res >= -1700) and (res < 1700):
         print(str(res))
@@ -71,9 +78,9 @@ def testIntersectionIn(x, y):
 
 def testIntersectionOut(x, y):
     res = -450 * x + 400 * y + 180000
-    #print(res)
+    # print(res)
     # if((x>270 and x<320) and (y<30) and (w<240 and w > 210)):
-    if ((x > 290 and x < 320) and (y < 10)):
+    if (290 < x < 320) and (y < 10):
         # if (res >= -550) and (res <= 550):
         # if (res >= -1700) and (res <= 1700):
         print(str(res))
@@ -99,6 +106,8 @@ while True:
         break
 
     # resize the frame, convert it to grayscale, and blur it
+    #########################RESCALE#######################33
+    #frame75 = imutils.resize((rescale_frame(frame, percent=75)), width=width)
     frame = imutils.resize(frame, width=width)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (21, 21), 0)
@@ -129,7 +138,7 @@ while True:
         # and update the text
         (x, y, w, h) = cv2.boundingRect(c)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        #print(w)
+        # print(w)
         cv2.line(frame, (width // 2, 0), (width, 550), (250, 0, 1), 2)  # blue line
         cv2.line(frame, (width // 2 - 50, 0), (width - 50, 550), (0, 0, 255), 2)  # red line
         # print(x, y, w, h)
@@ -144,7 +153,7 @@ while True:
         rectangleCenterPoint = ((x + x + w) // 2, (y + y + h) // 2)
         cv2.circle(frame, rectangleCenterPoint, 1, (0, 0, 255), 5)
 
-        #Color for rectangleCenterPoint
+        # Color for rectangleCenterPoint
         cv2.line(img=frame, pt1=((x + x + w) // 2, (y + y + h) // 2), pt2=((x + x + w) // 2, (y + y + h) // 2),
                  color=(255, 0, 0), thickness=5, lineType=8,
                  shift=0)
@@ -156,7 +165,7 @@ while True:
 
         # if (  ):
         #
-        #if (((x + x + w) // 2) >= (width // 2 - 50, 0) and ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h) // 2) >= (width - 50, 550) and ((y + y + h) // 2)  <= (width, 550)):
+        # if ((width // 2 - 50, 0) <= ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h)// 2) >= (width - 50, 550) and ((y + y + h) // 2) <= (width, 550)):
         if testIntersectionIn(x, y):
             textIn += 1
             camera.release()
@@ -167,7 +176,9 @@ while True:
         # if testIntersectionOut(w,h):
         # if rectangleCenterPoint in (x > 340 and x < 370):
         # todo Correctly calculate the lines and place the intersections accordingly.
-        #if (((x + x + w) // 2) >= (width // 2 - 50, 0) and ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h) // 2) >= (width - 50, 550) and ((y + y + h) // 2)  <= (width, 550)):
+        # if (((x + x + w) // 2) >= (width // 2 - 50, 0) and ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h) // 2) >= (width - 50, 550) and ((y + y + h) // 2)  <= (width, 550)):
+
+        # if ((width // 2 - 50, 0) <= ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h)// 2) >= (width - 50, 550) and ((y + y + h) // 2) <= (width, 550)):
         if testIntersectionOut(x, y):
             textOut += 1
             camera.release()
