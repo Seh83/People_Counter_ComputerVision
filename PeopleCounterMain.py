@@ -143,6 +143,8 @@ while True:
 
         rectangleCenterPoint = ((x + x + w) // 2, (y + y + h) // 2)
         cv2.circle(frame, rectangleCenterPoint, 1, (0, 0, 255), 5)
+
+        #Color for rectangleCenterPoint
         cv2.line(img=frame, pt1=((x + x + w) // 2, (y + y + h) // 2), pt2=((x + x + w) // 2, (y + y + h) // 2),
                  color=(255, 0, 0), thickness=5, lineType=8,
                  shift=0)
@@ -154,7 +156,7 @@ while True:
 
         # if (  ):
         #
-        # if (((x + x + w) // 2) >= (width // 2 - 50, 0) and (x + x + w) // 2 <= (width // 2, 0)) and ((y + y + h) // 2 >= (width - 50, 550) and (y + y + h) // 2  <= (width, 550))
+        #if (((x + x + w) // 2) >= (width // 2 - 50, 0) and ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h) // 2) >= (width - 50, 550) and ((y + y + h) // 2)  <= (width, 550)):
         if testIntersectionIn(x, y):
             textIn += 1
             camera.release()
@@ -165,7 +167,7 @@ while True:
         # if testIntersectionOut(w,h):
         # if rectangleCenterPoint in (x > 340 and x < 370):
         # todo Correctly calculate the lines and place the intersections accordingly.
-        # if (((x + x + w) // 2) >= (width // 2 - 50, 0) and (x + x + w) // 2 <= (width // 2, 0)) and ((y + y + h) // 2 >= (width - 50, 550) and (y + y + h) // 2  <= (width, 550))
+        #if (((x + x + w) // 2) >= (width // 2 - 50, 0) and ((x + x + w) // 2) <= (width // 2, 0)) and (((y + y + h) // 2) >= (width - 50, 550) and ((y + y + h) // 2)  <= (width, 550)):
         if testIntersectionOut(x, y):
             textOut += 1
             camera.release()
